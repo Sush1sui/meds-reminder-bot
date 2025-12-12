@@ -23,13 +23,16 @@ func RemindUserManual(sess *discordgo.Session) {
 	}
 
 	// Load medication schedule
+	fmt.Println("Loading medication schedule...")
 	schedule, err := LoadMedicationState()
 	if err != nil {
 		fmt.Printf("Error loading medication state: %v\n", err)
 		return
 	}
+	fmt.Println("Medication schedule loaded successfully.")
 
 	// Update medication counts based on elapsed days
+	fmt.Println("Updating medication counts...")
 	UpdateMedicationCounts(schedule)
 
 	// Get ALL active medications for manual testing
@@ -39,6 +42,8 @@ func RemindUserManual(sess *discordgo.Session) {
 			reminders = append(reminders, med)
 		}
 	}
+
+	fmt.Printf("Found %d active medications.\n", len(reminders))
 
 	if len(reminders) == 0 {
 		fmt.Println("No active medications found.")

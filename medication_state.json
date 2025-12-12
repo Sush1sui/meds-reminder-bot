@@ -1,0 +1,97 @@
+{
+  "medications": [
+    {
+      "name": "Doxycycline Hydrochloride 50mg/ml (EHRLICURE)",
+      "dose": "2 ml",
+      "times": [
+        "18:00"
+      ],
+      "days_remaining": 28,
+      "total_days": 28,
+      "indication": "Antibacterial",
+      "active": true,
+      "start_date": "2025-12-11"
+    },
+    {
+      "name": "Prednisone 20mg tab",
+      "dose": "1/2 tab",
+      "times": [
+        "09:00",
+        "21:00"
+      ],
+      "days_remaining": 7,
+      "total_days": 7,
+      "indication": "Corticosteroid",
+      "notes": "After 7 days, switch to 9pm only",
+      "active": true,
+      "start_date": "2025-12-11"
+    },
+    {
+      "name": "Papi Bion Plus",
+      "dose": "1.5 ml",
+      "times": [
+        "13:00"
+      ],
+      "days_remaining": 30,
+      "total_days": 30,
+      "indication": "Blood supplement",
+      "notes": "Don't combine with Doxycycline on short intervals",
+      "active": true,
+      "start_date": "2025-12-11"
+    },
+    {
+      "name": "Thromb Beat",
+      "dose": "4 ml",
+      "times": [
+        "08:00",
+        "20:00"
+      ],
+      "days_remaining": 30,
+      "total_days": 30,
+      "indication": "Platelet supplement",
+      "active": true,
+      "start_date": "2025-12-11"
+    },
+    {
+      "name": "Immunol syrup",
+      "dose": "2 ml",
+      "times": [
+        "07:00",
+        "19:00"
+      ],
+      "days_remaining": 30,
+      "total_days": 30,
+      "indication": "Immune booster",
+      "active": true,
+      "start_date": "2025-12-11"
+    },
+    {
+      "name": "Livertel",
+      "dose": "3 ml",
+      "times": [
+        "07:15",
+        "19:15"
+      ],
+      "days_remaining": 15,
+      "total_days": 15,
+      "indication": "Liver supplement",
+      "active": true,
+      "start_date": "2025-12-11"
+    },
+    {
+      "name": "Sync Nephric syrup",
+      "dose": "3 ml",
+      "times": [
+        "07:30",
+        "19:30"
+      ],
+      "days_remaining": 15,
+      "total_days": 15,
+      "indication": "Kidney supplement",
+      "active": true,
+      "start_date": "2025-12-11"
+    }
+  ],
+  "last_updated": "2025-12-12T15:35:32+08:00",
+  "prednisone_switch": false
+}

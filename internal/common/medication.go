@@ -41,7 +41,11 @@ func LoadMedicationState() (*MedicationSchedule, error) {
 	if err != nil {
 		if os.IsNotExist(err) {
 			// Initialize with default schedule if file doesn't exist
-			return initializeDefaultSchedule(), nil
+			// Unlock before calling init to avoid deadlock
+			stateMutex.Unlock()
+			schedule := initializeDefaultSchedule()
+			stateMutex.Lock()
+			return schedule, nil
 		}
 		return nil, err
 	}
@@ -245,7 +249,7 @@ func FormatReminderMessage(reminders []Medication) string {
 	}
 
 	message := "🔔 **Medication Reminder** 🔔\n\n"
-	message += "Time to take your meds, pretti! ❤️❤️❤️\n\n"
+	message += "It's time for Diluc's meds! 💊✨\n\n"
 
 	for _, med := range reminders {
 		message += fmt.Sprintf("💊 **%s**\n", med.Name)
