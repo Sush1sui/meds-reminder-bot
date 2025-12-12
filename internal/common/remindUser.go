@@ -6,6 +6,7 @@ import (
 	"net/smtp"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/jordan-wright/email"
@@ -14,39 +15,95 @@ import (
 func RemindUser(sess *discordgo.Session) {
 	fmt.Println("Reminder service started.")
 
-	// extract user ids from env variable
-	userIDs := strings.Split(os.Getenv("user"), ",")
+	// Nil check for session
+	if sess == nil {
+		fmt.Println("Error: Discord session is nil")
+		return
+	}
 
-	for _, userID := range userIDs {
-		// create a DM channel with the user
+	// Load medication schedule
+	schedule, err := LoadMedicationState()
+	if err != nil {
+		fmt.Printf("Error loading medication state: %v\n", err)
+		return
+	}
+
+	// Update medication counts based on elapsed days
+	UpdateMedicationCounts(schedule)
+
+	// Get current reminders for this time
+	loc := time.FixedZone("UTC+8", 8*3600)
+	now := time.Now().In(loc)
+	reminders := GetCurrentReminders(schedule, now)
+
+	if len(reminders) == 0 {
+		fmt.Println("No medications due at this time.")
+		return
+	}
+
+	// Format the reminder message
+	reminderMsg := FormatReminderMessage(reminders)
+
+	// Send to JP (hardcoded user for medication tracking)
+	userID := JPDiscordID
+	if userID == "" {
+		fmt.Println("Error: User ID is empty")
+		return
+	}
+
+	// Send Discord DM asynchronously
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Printf("Discord DM panic: %v\n", r)
+			}
+		}()
+
 		channel, err := sess.UserChannelCreate(userID)
 		if err != nil {
 			fmt.Printf("Error creating DM channel with user %s: %v\n", userID, err)
-			continue
+			return
 		}
-		// send a reminder message
-        reminder := os.Getenv("reminder_msg")
-		_, err = sess.ChannelMessageSend(channel.ID, os.Getenv("reminder_msg"))
+
+		_, err = sess.ChannelMessageSend(channel.ID, reminderMsg)
 		if err != nil {
 			fmt.Printf("Error sending message to user %s: %v\n", userID, err)
-			continue
+		} else {
+			fmt.Printf("Sent reminder to user %s\n", userID)
 		}
-		fmt.Printf("Sent reminder to user %s\n", userID)
+	}()
 
-		// send email as well
-        emails := strings.Split(os.Getenv("EMAIL_TO"), ",")
-        subj := os.Getenv("EMAIL_SUBJECT")
-        if subj == "" {
-            subj = "Medication reminder"
-        }
-        if len(emails) > 0 && emails[0] != "" {
-            if err := sendEmail(emails, subj, reminder); err != nil {
-                fmt.Printf("Error sending email to %v: %v\n", emails, err)
-            } else {
-                fmt.Printf("Sent email reminder to %v\n", emails)
-            }
-        }
-	}
+	// Send emails asynchronously
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Printf("Email sending panic: %v\n", r)
+			}
+		}()
+
+		// Parse and trim email addresses
+		emailList := strings.Split(JPEmails, ",")
+		var trimmedEmails []string
+		for _, email := range emailList {
+			if trimmed := strings.TrimSpace(email); trimmed != "" {
+				trimmedEmails = append(trimmedEmails, trimmed)
+			}
+		}
+
+		if len(trimmedEmails) == 0 {
+			fmt.Println("No valid email addresses")
+			return
+		}
+
+		subj := "Medication Reminder"
+		plainText := strings.ReplaceAll(reminderMsg, "**", "")
+
+		if err := sendEmail(trimmedEmails, subj, plainText); err != nil {
+			fmt.Printf("Error sending email to %v: %v\n", trimmedEmails, err)
+		} else {
+			fmt.Printf("Sent email reminder to %v\n", trimmedEmails)
+		}
+	}()
 }
 
 

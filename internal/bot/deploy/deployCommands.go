@@ -14,12 +14,17 @@ var SlashCommands = []*discordgo.ApplicationCommand{
 		Name:        "remind",
 		Description: "Send medication reminders to users",
 	},
+	{
+		Name:        "schedule",
+		Description: "View current medication schedule and remaining days",
+	},
 	// Add more commands here
 }
 
 // Map command names to handler functions
 var CommandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
-	"remind": commands.RemindCommand,
+	"remind":   commands.RemindCommand,
+	"schedule": commands.ScheduleCommand,
 	// Add more: "hello": commands.HelloCommand, etc.
 }
 
