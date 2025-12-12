@@ -13,6 +13,24 @@ var SlashCommands = []*discordgo.ApplicationCommand{
 	{
 		Name:        "remind",
 		Description: "Send medication reminders to users",
+		Options: []*discordgo.ApplicationCommandOption{
+			{
+				Type:        discordgo.ApplicationCommandOptionString,
+				Name:        "user",
+				Description: "Choose who to remind",
+				Required:    true,
+				Choices: []*discordgo.ApplicationCommandOptionChoice{
+					{
+						Name:  "JP (Medication Schedule)",
+						Value: "jp",
+					},
+					{
+						Name:  "Dane (Simple Reminder)",
+						Value: "dane",
+					},
+				},
+			},
+		},
 	},
 	{
 		Name:        "schedule",

@@ -18,7 +18,7 @@ func StartBot() {
 
 	// create new discord session
 	if config.GlobalConfig.DiscordToken == "" {
-		fmt.Println("Bot token not found")
+		log.Fatal("Bot token not found in environment variables")
 	}
 	sess, err := discordgo.New("Bot " + config.GlobalConfig.DiscordToken)
 	if err != nil {
@@ -45,7 +45,43 @@ func StartBot() {
 	// Deploy events
 	deploy.DeployEvents(sess)
 
-	// Start medication reminder scheduler
+	// Start simple reminder for Dane at 10am
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Printf("Simple scheduler panic: %v\n", r)
+			}
+		}()
+
+		loc := time.FixedZone("UTC+8", 8*3600)
+		for {
+			now := time.Now().In(loc)
+			
+			// Check if it's 10:00 AM
+			if now.Hour() == 10 && now.Minute() == 0 {
+				go func() {
+					defer func() {
+						if r := recover(); r != nil {
+							fmt.Printf("Simple reminder panic: %v\n", r)
+						}
+					}()
+					common.SendSimpleReminder(sess)
+				}()
+				
+					// Sleep for 61 seconds to avoid duplicate in same minute
+				time.Sleep(61 * time.Second)
+			} else {
+				// Sleep until next minute boundary
+				nextMinute := now.Truncate(time.Minute).Add(time.Minute)
+				sleepDuration := time.Until(nextMinute)
+				if sleepDuration > 0 {
+					time.Sleep(sleepDuration)
+				}
+			}
+		}
+	}()
+
+	// Start medication reminder scheduler for JP
 	go func() {
 		defer func() {
 			if r := recover(); r != nil {
