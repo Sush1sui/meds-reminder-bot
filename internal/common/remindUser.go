@@ -12,6 +12,104 @@ import (
 	"github.com/jordan-wright/email"
 )
 
+// RemindUserManual sends all active medications regardless of time (for manual testing)
+func RemindUserManual(sess *discordgo.Session) {
+	fmt.Println("Manual reminder service started.")
+
+	// Nil check for session
+	if sess == nil {
+		fmt.Println("Error: Discord session is nil")
+		return
+	}
+
+	// Load medication schedule
+	schedule, err := LoadMedicationState()
+	if err != nil {
+		fmt.Printf("Error loading medication state: %v\n", err)
+		return
+	}
+
+	// Update medication counts based on elapsed days
+	UpdateMedicationCounts(schedule)
+
+	// Get ALL active medications for manual testing
+	var reminders []Medication
+	for _, med := range schedule.Medications {
+		if med.Active {
+			reminders = append(reminders, med)
+		}
+	}
+
+	if len(reminders) == 0 {
+		fmt.Println("No active medications found.")
+		return
+	}
+
+	// Format the reminder message
+	reminderMsg := FormatReminderMessage(reminders)
+
+	// Send to JP (hardcoded user for medication tracking)
+	userID := JPDiscordID
+	if userID == "" {
+		fmt.Println("Error: User ID is empty")
+		return
+	}
+
+	// Send Discord DM asynchronously
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Printf("Discord DM panic: %v\n", r)
+			}
+		}()
+
+		channel, err := sess.UserChannelCreate(userID)
+		if err != nil {
+			fmt.Printf("Error creating DM channel with user %s: %v\n", userID, err)
+			return
+		}
+
+		_, err = sess.ChannelMessageSend(channel.ID, reminderMsg)
+		if err != nil {
+			fmt.Printf("Error sending message to user %s: %v\n", userID, err)
+		} else {
+			fmt.Printf("Sent manual reminder to user %s\n", userID)
+		}
+	}()
+
+	// Send emails asynchronously
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Printf("Email sending panic: %v\n", r)
+			}
+		}()
+
+		// Parse and trim email addresses
+		emailList := strings.Split(JPEmails, ",")
+		var trimmedEmails []string
+		for _, email := range emailList {
+			if trimmed := strings.TrimSpace(email); trimmed != "" {
+				trimmedEmails = append(trimmedEmails, trimmed)
+			}
+		}
+
+		if len(trimmedEmails) == 0 {
+			fmt.Println("No valid email addresses")
+			return
+		}
+
+		subj := "Medication Reminder (Manual Test)"
+		plainText := strings.ReplaceAll(reminderMsg, "**", "")
+
+		if err := sendEmail(trimmedEmails, subj, plainText); err != nil {
+			fmt.Printf("Error sending email to %v: %v\n", trimmedEmails, err)
+		} else {
+			fmt.Printf("Sent manual email reminder to %v\n", trimmedEmails)
+		}
+	}()
+}
+
 func RemindUser(sess *discordgo.Session) {
 	fmt.Println("Reminder service started.")
 

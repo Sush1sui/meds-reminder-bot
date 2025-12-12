@@ -56,7 +56,7 @@ func RemindCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 		// send reminder based on choice
 		if userChoice == "jp" {
-			common.RemindUser(s)
+			common.RemindUserManual(s) // Use manual version for testing
 		} else if userChoice == "dane" {
 			common.SendSimpleReminder(s)
 		}
