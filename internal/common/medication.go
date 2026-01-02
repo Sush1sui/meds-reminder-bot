@@ -79,84 +79,84 @@ const (
 
 // initializeDefaultSchedule creates the initial medication schedule
 func initializeDefaultSchedule() *MedicationSchedule {
-	startDate := "2025-12-11" // Started December 11, 2025 at 6pm
+	// startDate := "2025-12-11" // Started December 11, 2025 at 6pm
 
 	schedule := &MedicationSchedule{
 		LastUpdated:      time.Now().Format(time.RFC3339),
 		PrednisoneSwitch: false,
 		Medications: []Medication{
-			{
-				Name:          "Doxycycline Hydrochloride 50mg/ml (EHRLICURE)",
-				Dose:          "2 ml",
-				Times:         []string{"18:00"}, // 6pm
-				DaysRemaining: 28,
-				TotalDays:     28,
-				Indication:    "Antibacterial",
-				Active:        true,
-				StartDate:     startDate,
-			},
-			{
-				Name:          "Prednisone 20mg tab",
-				Dose:          "1/2 tab",
-				Times:         []string{"09:00", "21:00"}, // 9am, 9pm
-				DaysRemaining: 7,
-				TotalDays:     7,
-				Indication:    "Corticosteroid",
-				Notes:         "After 7 days, switch to 9pm only",
-				Active:        true,
-				StartDate:     startDate,
-			},
-			{
-				Name:          "Papi Bion Plus",
-				Dose:          "1.5 ml",
-				Times:         []string{"13:00"}, // 1pm
-				DaysRemaining: 30,
-				TotalDays:     30,
-				Indication:    "Blood supplement",
-				Notes:         "Don't combine with Doxycycline on short intervals",
-				Active:        true,
-				StartDate:     startDate,
-			},
-			{
-				Name:          "Thromb Beat",
-				Dose:          "4 ml",
-				Times:         []string{"08:00", "20:00"}, // 8am, 8pm
-				DaysRemaining: 30,
-				TotalDays:     30,
-				Indication:    "Platelet supplement",
-				Active:        true,
-				StartDate:     startDate,
-			},
-			{
-				Name:          "Immunol syrup",
-				Dose:          "2 ml",
-				Times:         []string{"07:00", "19:00"}, // 7am, 7pm
-				DaysRemaining: 30,
-				TotalDays:     30,
-				Indication:    "Immune booster",
-				Active:        true,
-				StartDate:     startDate,
-			},
-			{
-				Name:          "Livertel",
-				Dose:          "3 ml",
-				Times:         []string{"07:15", "19:15"}, // 7:15am, 7:15pm
-				DaysRemaining: 15,
-				TotalDays:     15,
-				Indication:    "Liver supplement",
-				Active:        true,
-				StartDate:     startDate,
-			},
-			{
-				Name:          "Sync Nephric syrup",
-				Dose:          "3 ml",
-				Times:         []string{"07:30", "19:30"}, // 7:30am, 7:30pm
-				DaysRemaining: 15,
-				TotalDays:     15,
-				Indication:    "Kidney supplement",
-				Active:        true,
-				StartDate:     startDate,
-			},
+			// {
+			// 	Name:          "Doxycycline Hydrochloride 50mg/ml (EHRLICURE)",
+			// 	Dose:          "2 ml",
+			// 	Times:         []string{"18:00"}, // 6pm
+			// 	DaysRemaining: 28,
+			// 	TotalDays:     28,
+			// 	Indication:    "Antibacterial",
+			// 	Active:        true,
+			// 	StartDate:     startDate,
+			// },
+			// {
+			// 	Name:          "Prednisone 20mg tab",
+			// 	Dose:          "1/2 tab",
+			// 	Times:         []string{"09:00", "21:00"}, // 9am, 9pm
+			// 	DaysRemaining: 7,
+			// 	TotalDays:     7,
+			// 	Indication:    "Corticosteroid",
+			// 	Notes:         "After 7 days, switch to 9pm only",
+			// 	Active:        true,
+			// 	StartDate:     startDate,
+			// },
+			// {
+			// 	Name:          "Papi Bion Plus",
+			// 	Dose:          "1.5 ml",
+			// 	Times:         []string{"13:00"}, // 1pm
+			// 	DaysRemaining: 30,
+			// 	TotalDays:     30,
+			// 	Indication:    "Blood supplement",
+			// 	Notes:         "Don't combine with Doxycycline on short intervals",
+			// 	Active:        true,
+			// 	StartDate:     startDate,
+			// },
+			// {
+			// 	Name:          "Thromb Beat",
+			// 	Dose:          "4 ml",
+			// 	Times:         []string{"08:00", "20:00"}, // 8am, 8pm
+			// 	DaysRemaining: 30,
+			// 	TotalDays:     30,
+			// 	Indication:    "Platelet supplement",
+			// 	Active:        true,
+			// 	StartDate:     startDate,
+			// },
+			// {
+			// 	Name:          "Immunol syrup",
+			// 	Dose:          "2 ml",
+			// 	Times:         []string{"07:00", "19:00"}, // 7am, 7pm
+			// 	DaysRemaining: 30,
+			// 	TotalDays:     30,
+			// 	Indication:    "Immune booster",
+			// 	Active:        true,
+			// 	StartDate:     startDate,
+			// },
+			// {
+			// 	Name:          "Livertel",
+			// 	Dose:          "3 ml",
+			// 	Times:         []string{"07:15", "19:15"}, // 7:15am, 7:15pm
+			// 	DaysRemaining: 15,
+			// 	TotalDays:     15,
+			// 	Indication:    "Liver supplement",
+			// 	Active:        true,
+			// 	StartDate:     startDate,
+			// },
+			// {
+			// 	Name:          "Sync Nephric syrup",
+			// 	Dose:          "3 ml",
+			// 	Times:         []string{"07:30", "19:30"}, // 7:30am, 7:30pm
+			// 	DaysRemaining: 15,
+			// 	TotalDays:     15,
+			// 	Indication:    "Kidney supplement",
+			// 	Active:        true,
+			// 	StartDate:     startDate,
+			// },
 		},
 	}
 
