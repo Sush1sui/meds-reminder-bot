@@ -33,7 +33,7 @@ func AddReminder(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	minute := i.ApplicationCommandData().GetOption("minute").IntValue()
 	am := i.ApplicationCommandData().GetOption("am").BoolValue()
 
-	if user == nil || email == "" || message == "" || hour < 1 || hour > 12 || minute < 0 || minute > 59 || am == false {
+	if user == nil || email == "" || message == "" || hour < 1 || hour > 12 || minute < 0 || minute > 59 {
 		common.ResponseEdit(s, i, "Missing required options.")
 		return
 	}
