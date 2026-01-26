@@ -11,38 +11,84 @@ import (
 // List all slash commands here
 var SlashCommands = []*discordgo.ApplicationCommand{
 	{
-		Name:        "remind",
-		Description: "Send medication reminders to users",
+		Name:        "add-reminder",
+		Description: "Add a reminder",
 		Options: []*discordgo.ApplicationCommandOption{
 			{
-				Type:        discordgo.ApplicationCommandOptionString,
+				Type:        discordgo.ApplicationCommandOptionUser,
 				Name:        "user",
 				Description: "Choose who to remind",
 				Required:    true,
-				Choices: []*discordgo.ApplicationCommandOptionChoice{
-					{
-						Name:  "JP (Medication Schedule)",
-						Value: "jp",
-					},
-					{
-						Name:  "Dane (Simple Reminder)",
-						Value: "dane",
-					},
-				},
+			},
+			{
+				Type:        discordgo.ApplicationCommandOptionString,
+				Name:		"email",
+				Description:	"User email",
+				Required:	true,
+			},
+			{
+				Type:		discordgo.ApplicationCommandOptionString,
+				Name:		"message",
+				Description:	"Reminder message",
+				Required:	true,
+			},
+			{
+				Type:		discordgo.ApplicationCommandOptionInteger,
+				Name:		"hour",
+				Description:	"Hour (1-12)",
+				Required:	true,
+			},
+			{
+				Type:		discordgo.ApplicationCommandOptionInteger,
+				Name:		"minute",
+				Description:	"Minute (0-59)",
+				Required:	true,
+			},
+			{
+				Type:		discordgo.ApplicationCommandOptionBoolean,
+				Name:		"am",
+				Description:	"True for AM, False for PM",
+				Required:	true,
 			},
 		},
 	},
 	{
-		Name:        "schedule",
-		Description: "View current medication schedule and remaining days",
+		Name:		"get-all-reminders",
+		Description:	"Get your reminders",
+	},
+	{
+		Name: 		"get-user-reminders",
+		Description: 	"Get reminders for a specific user",
+		Options: []*discordgo.ApplicationCommandOption{
+			{
+				Type:        discordgo.ApplicationCommandOptionUser,
+				Name:        "user",
+				Description: "Select the user",
+				Required:    true,
+			},
+		},
+	},
+	{
+		Name:		"delete-reminder",
+		Description:	"Delete a reminder by its ID",
+		Options: []*discordgo.ApplicationCommandOption{
+			{
+				Type:		discordgo.ApplicationCommandOptionString,
+				Name:		"reminder_id",
+				Description:	"ID of the reminder to delete",
+				Required:	true,
+			},
+		},
 	},
 	// Add more commands here
 }
 
 // Map command names to handler functions
 var CommandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
-	"remind":   commands.RemindCommand,
-	"schedule": commands.ScheduleCommand,
+	"add-reminder":		commands.AddReminder,
+	"get-all-reminders":		commands.GetAllReminders,
+	"get-user-reminders":	commands.GetUserReminders,
+	"delete-reminder":	commands.DeleteReminder,
 	// Add more: "hello": commands.HelloCommand, etc.
 }
 

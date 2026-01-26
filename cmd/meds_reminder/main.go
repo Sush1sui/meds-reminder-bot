@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -9,6 +10,8 @@ import (
 
 	"github.com/Sush1sui/meds_reminder/internal/bot"
 	"github.com/Sush1sui/meds_reminder/internal/config"
+	"github.com/Sush1sui/meds_reminder/internal/repository"
+	"github.com/Sush1sui/meds_reminder/internal/repository/mongodb"
 	"github.com/Sush1sui/meds_reminder/internal/server/routes"
 )
 
@@ -16,6 +19,20 @@ func main() {
 	err := config.LoadConfig()
 	if err != nil {
 		panic(err)
+	}
+
+	mongoClient := config.MongoConnection()
+	defer mongoClient.Disconnect(context.Background())
+	if err := mongoClient.Ping(context.Background(), nil); err != nil {
+		panic(fmt.Sprintf("Failed to connect to MongoDB: %v", err))
+	}
+
+	remindersCollection := mongoClient.Database(os.Getenv("MONGODB_NAME")).Collection("reminders")
+
+	repository.ReminderService = repository.ReminderServiceType{
+		DBClient: &mongodb.MongoClient{
+			Client: remindersCollection,
+		},
 	}
 
 	addr := fmt.Sprintf(":%s", config.GlobalConfig.ServerPort)
