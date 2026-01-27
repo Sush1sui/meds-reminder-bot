@@ -29,14 +29,14 @@ func StartReminder(s *discordgo.Session, userID, message, email string, hour, mi
 
 	go func() {
 		for {
-			now := time.Now()
-			loc := now.Location()
+			loc := time.FixedZone("UTC+8", 8*60*60)
+			now := time.Now().In(loc)
 			next := time.Date(now.Year(), now.Month(), now.Day(), hour24, minute, 0, 0, loc)
 			if !next.After(now) {
 				next = next.Add(24 * time.Hour)
 			}
 
-			wait := time.Until(next)
+			wait := next.Sub(now)
 			time.Sleep(wait)
 
 			// send email
