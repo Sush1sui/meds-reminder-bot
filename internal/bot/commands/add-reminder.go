@@ -75,5 +75,7 @@ func AddReminder(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	"Minute: " + strconv.FormatInt(minute, 10) + "\n" +
 	"AM/PM: " + amOrPm
 
+	common.StartReminder(s, reminder.UserID, reminder.Message, reminder.Email, reminder.Hour, reminder.Minute, reminder.AM)
+
 	common.ResponseEdit(s, i, messageResponse)
 }
